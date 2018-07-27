@@ -1,0 +1,9 @@
+---
+actions:
+    - name: "Download in progress"
+      file_glob:
+          - "*.crdownload"
+    - name: "Print out Research PDFs"
+      file_glob:
+          - "printme-*.pdf"
+      handler: "print-pdf \"$file\" --printer my-printer"
