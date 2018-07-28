@@ -3,14 +3,13 @@ use strict;
 use warnings;
 
 use Test::More tests => 1;
-use Log::Log4perl qw(:easy);
 
-my $module;
+require './Makefile.PL';
+my %module = get_module_info();
 
-BEGIN {
-   $module  = "WWW::Mechanize::Chrome";
-   require_ok( $module );
-}
+my $module = $module{ NAME };
+
+require_ok( $module );
 
 diag( sprintf "Testing %s %s, Perl %s", $module, $module->VERSION, $] );
 
