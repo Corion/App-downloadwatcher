@@ -21,4 +21,5 @@ my $watcher = App::downloadwatcher->new(
     dryrun      => $dryrun,
     verbose     => $verbose,
 );
-$watcher->run;
+
+$watcher->run( @ARGV );

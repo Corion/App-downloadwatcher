@@ -53,7 +53,7 @@ has 'actions' => (
 sub update_config( $self, $config = $self->read_config()) {
     # Replace our actions
     $self->actions( delete $config->{actions} );
-    
+
     # Check if we need a new watcher:
     my $current = join "\0", grep { $_ ne $self->config_file } @{ $self->directories };
     my $next = join "\0", @{ $config->{directories} || $self->directories };
@@ -77,7 +77,7 @@ sub glob_to_regex( $glob ) {
         '(' => '\\(',
         ')' => '\\)',
     );
-    
+
     $glob =~ s!([*?.()])!$map{ $1 }!ge;
     $glob =~ s!\{([^{}]+)}!alternation($1)!ge;
     qr/\A(?:$glob)\z/
@@ -85,9 +85,9 @@ sub glob_to_regex( $glob ) {
 
 sub read_config( $self, $config_file=$self->config_file ) {
     my $config = LoadFile( $config_file );
-    
+
     # Convert everything to arrays of regexes:
-    
+
     for my $action (@{ $config->{ actions }}) {
         if( $action->{ file_regex } and ! ref $action->{ file_regex }) {
             $action->{ file_regex } = [ $action->{ file_regex } ]
@@ -96,7 +96,7 @@ sub read_config( $self, $config_file=$self->config_file ) {
         if( $action->{ file_glob } and ! ref $action->{ file_glob}) {
             $action->{ file_glob} = [ $action->{ file_glob } ]
         };
-        
+
         if( $action->{ file_glob } ) {
             for my $glob (@{ $action->{ file_glob }}) {
                 $glob = glob_to_regex($glob);
@@ -106,7 +106,7 @@ sub read_config( $self, $config_file=$self->config_file ) {
         #if( $action->{ file_content }) {
         #};
     };
-   
+
     $config
 }
 
@@ -128,21 +128,30 @@ sub _build_directories( $self ) {
     ]
 }
 
-sub run( $self ) {
+sub run( $self, @files ) {
     $self->update_config;
-    while( 1 ) {
-        $self->watcher->wait(sub( @events ) {
-            my $config_file = file($self->config_file)->absolute('.');
-            for my $event (@events) {
-                if( $event->{path} eq $config_file ) {
-                    warn "Reloading config";
-                    $self->update_config();
-                } else {
-                    $self->file_changed( $event->{path})
+    if( @files ) {
+        for my $file (@files) {
+            $self->file_changed( $file );
+        };
+    } else {
+        while( 1 ) {
+            $self->watcher->wait(sub( @events ) {
+                my $config_file = file($self->config_file)->absolute('.');
+                for my $event (@events) {
+                    if( $event->{path} eq $config_file ) {
+                        warn "Reloading config";
+                        $self->update_config();
+                    } else {
+                        # We only care for created files, not for deleted files:
+                        if( -f $event->{path} ) {
+                            $self->file_changed( $event->{path})
+                        }
+                    }
                 }
-            }
-        })
-    }
+            })
+        }
+    };
 }
 
 sub regex_match( $file, $list ) {
@@ -153,12 +162,12 @@ sub regex_match( $file, $list ) {
 }
 
 sub find_actions( $self, $file ) {
-    my @matches = 
+    my @matches =
     grep {
            regex_match( $file, $_->{file_regex} )
         or regex_match( $file, $_->{file_glob} )
     } @{ $self->actions };
-    
+
     @matches
 };
 
