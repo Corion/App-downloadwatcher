@@ -34,7 +34,7 @@ my %module = (
         x_static_install => 1, # we are pure Perl and don't do anything fancy
     },
 
-    MIN_PERL_VERSION => '5.010', # I use // in some places
+    MIN_PERL_VERSION => '5.006',
 
     'LICENSE'=> 'perl',
 
@@ -44,7 +44,7 @@ my %module = (
     },
 
     PREREQ_PM => {
-        'Filter::signatures'      => '0.09',
+        'Filter::signatures'      => '0.13',
         'Carp'                    => 0,
         
         'Moo'                     => 0,
