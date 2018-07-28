@@ -43,7 +43,12 @@ GetOptions(
     'verbose'        => \my $verbose,
 ) or pod2usage(2);
 
-$configfile ||= './.downloadrc.yml';
+if( ! $configfile) {
+    ($configfile) = grep { -f $_ }
+                  map { "$_/.downloadrc.yml" }
+                  grep { defined && -d }
+                  ('.', $ENV{HOME}, $ENV{USERPROFILE});
+};
 $verbose ||= $dryrun;
 
 my $watcher = App::downloadwatcher->new(
