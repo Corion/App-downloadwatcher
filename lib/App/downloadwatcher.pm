@@ -112,9 +112,9 @@ sub read_config( $self, $config_file=$self->config_file ) {
 
 sub _build_watcher( $self, $directories = $self->directories ) {
     my $dir = [@$directories];
-    if( my $cfg = $self->config_file ) {
-        push @$dir, file($cfg)->absolute('.')->parent
-    };
+    #if( my $cfg = $self->config_file ) {
+    #    push @$dir, file($cfg)->absolute('.')->parent
+    #};
     #warn "Watching @$dir";
     Filesys::Notify::Simple->new($dir);
 }
@@ -137,17 +137,17 @@ sub run( $self, @files ) {
     } else {
         while( 1 ) {
             $self->watcher->wait(sub( @events ) {
-                my $config_file = file($self->config_file)->absolute('.');
+                #my $config_file = file($self->config_file)->absolute('.');
                 for my $event (@events) {
-                    if( $event->{path} eq $config_file ) {
-                        warn "Reloading config";
-                        $self->update_config();
-                    } else {
+                    #if( $event->{path} eq $config_file ) {
+                    #    warn "Reloading config";
+                    #    $self->update_config();
+                    #} else {
                         # We only care for created files, not for deleted files:
                         if( -f $event->{path} ) {
                             $self->file_changed( $event->{path})
                         }
-                    }
+                    #}
                 }
             })
         }

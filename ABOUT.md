@@ -38,5 +38,5 @@ all the time. Just launch the program with the `-n` command line switch and
 give it some filenames on the command line. It will output which rule
 matches.
 
-    perl -w scripts/downloadwatcher.pl -d printme-test.pdf dont-printme-test.pdf
+    perl -w scripts/downloadwatcher.pl -n printme-test.pdf dont-printme-test.pdf
 
