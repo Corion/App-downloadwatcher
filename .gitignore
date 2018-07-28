@@ -15,3 +15,4 @@ MYMETA.*
 frame-*.png
 *.pl
 .downloadrc.yml
+App-downloadwatcher-*
