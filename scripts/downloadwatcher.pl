@@ -1,5 +1,6 @@
-#!perl -w
+#!perl
 use strict;
+use warnings;
 use App::downloadwatcher;
 use Getopt::Long;
 use Pod::Usage;

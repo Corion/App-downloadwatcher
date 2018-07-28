@@ -1,5 +1,6 @@
 package App::downloadwatcher;
 use strict;
+use warnings;
 use Moo;
 use Path::Class;
 use Filter::signatures;
