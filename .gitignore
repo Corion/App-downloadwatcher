@@ -5,14 +5,11 @@ Makefile.old
 *.swp
 pm_to_blib
 blib/
-WWW-Mechanize-Chrome-*
-WWW-Mechanize-Chrome-*/
 .releaserc
 cover_db
-firefox-versions/
-chrome-versions/
 MYMETA.*
 frame-*.png
 *.pl
 .downloadrc.yml
 App-downloadwatcher-*
+go.cmd
