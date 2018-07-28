@@ -5,6 +5,8 @@ use App::downloadwatcher;
 use Getopt::Long;
 use Pod::Usage;
 
+our $VERSION = '0.01';
+
 GetOptions(
     'f|configfile=s' => \my $configfile,
 ) or pod2usage(2);
