@@ -32,6 +32,14 @@ has 'watcher' => (
     default => \&_build_watcher,
 );
 
+has 'dryrun' => (
+    is => 'ro',
+);
+
+has 'verbose' => (
+    is => 'ro',
+);
+
 has 'directories' => (
     is => 'rw',
     default => \&_build_directories,
@@ -155,18 +163,23 @@ sub find_actions( $self, $file ) {
 };
 
 sub file_changed( $self, $file ) {
-    # We only care for created files, not for deleted files:
-    if( -f $file ) {
-        my $name = file( $file )->basename;
-        my @actions = $self->find_actions( $name );
-        for my $action (@actions) {
-            if( $action->{handler}) { 
-                my $cmd = $action->{handler};
-                $cmd =~ s!\$file!$file!;
-                print "$cmd\n";
+    my $name = file( $file )->basename;
+    my @actions = $self->find_actions( $name );
+    for my $action (@actions) {
+        if( $action->{handler}) {
+            my $cmd = $action->{handler};
+            $cmd =~ s!\$file!$file!;
+            if( $self->verbose ) {
+                print "Running $cmd\n";
+            };
+            if( ! $self->dryrun ) {
                 system( $cmd );
+                return;
             };
         };
+    };
+    if( $self->verbose ) {
+        print "No rule matches for '$file'\n";
     };
 }
 
